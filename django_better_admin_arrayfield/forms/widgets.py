@@ -4,6 +4,19 @@ from django import forms
 class DynamicArrayWidget(forms.TextInput):
 
     template_name = "django_better_admin_arrayfield/forms/widgets/dynamic_array.html"
+    
+    delimiter = ','
+
+    @property
+    def media(self):
+        js = (
+            "js/min/django_better_admin_arrayfield.min.js",
+        )
+        css = {"all": (
+            "css/min/django_better_admin_arrayfield.min.css",
+        )}
+
+        return forms.Media(js=js, css=css)
 
     def get_context(self, name, value, attrs):
         context_value = value or [""]
@@ -32,4 +45,14 @@ class DynamicArrayWidget(forms.TextInput):
             return data.get(name)
 
     def format_value(self, value):
-        return value or []
+        pre_comma = 0
+        values = []
+        if value:
+            for comma_index in re.finditer(self.delimiter, value):
+                comma_index = comma_index.start()
+                if value[comma_index:comma_index + 2] != f'{self.delimiter} ':
+                    values.append(value[pre_comma:comma_index])
+                    pre_comma = comma_index + 1
+
+            values.append(value[pre_comma:len(value)])
+        return values
