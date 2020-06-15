@@ -2,7 +2,9 @@
 {% load i18n %}
 
 {% spaceless %}
-{% include widget.null_widget.template_name %}
+{% with widget=widget.null_widget %}
+  {% include widget.template_name %}
+{% endwith %}
 <div class="dynamic-array-widget">
   <ul>
     {% for subwidget in widget.subwidgets %}
