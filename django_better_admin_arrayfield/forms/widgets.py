@@ -35,6 +35,7 @@ class DynamicArrayWidget(forms.TextInput):
             subwidgets.append(widget.get_context(name, item, widget_attrs)["widget"])
 
         context["widget"]["subwidgets"] = subwidgets
+        context["widget"]["null_widget"] = forms.HiddenInput().get_context(name, '', final_attrs.copy())["widget"]
         return context
 
     def value_from_datadict(self, data, files, name):
